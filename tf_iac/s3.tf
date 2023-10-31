@@ -1,4 +1,4 @@
-resource "aws_s3_bucket" "my_potal_static" {
+resource "aws_s3_bucket" "mypotal_static" {
   bucket = "my-potal-static-content"
 
   tags = {
@@ -7,7 +7,7 @@ resource "aws_s3_bucket" "my_potal_static" {
   }
 }
 resource "aws_s3_bucket_website_configuration" "my_potal_website" {
-  bucket = aws_s3_bucket.my_potal_static.id
+  bucket = aws_s3_bucket.mypotal_static.id
 
   index_document {
     suffix = "index.html"
@@ -27,7 +27,7 @@ resource "aws_s3_bucket_website_configuration" "my_potal_website" {
   }
 }
 resource "aws_s3_bucket_public_access_block" "static_access_block" {
-  bucket = aws_s3_bucket.my_potal_static.id
+  bucket = aws_s3_bucket.mypotal_static.id
 
   block_public_acls       = false
   block_public_policy     = false
@@ -36,7 +36,7 @@ resource "aws_s3_bucket_public_access_block" "static_access_block" {
 }
 
 resource "aws_s3_bucket_policy" "bucket_policy" {
-  bucket = aws_s3_bucket.my_potal_static.id
+  bucket = aws_s3_bucket.mypotal_static.id
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -46,8 +46,8 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
         Principal = "*",
         Action    = "s3:*",
         Resource = [
-          "${aws_s3_bucket.my_potal_static.arn}/*",
-          "${aws_s3_bucket.my_potal_static.arn}"
+          "${aws_s3_bucket.mypotal_static.arn}/*",
+          "${aws_s3_bucket.mypotal_static.arn}"
         ]
       }
     ]
@@ -69,8 +69,8 @@ resource "aws_iam_policy" "github_to_s3_upload" {
           "s3:DeleteObject"
         ],
         Resource = [
-          "${aws_s3_bucket.my_potal_static.arn}/*",
-          "${aws_s3_bucket.my_potal_static.arn}" // Bucket itself also should be added for actions like ListBucket
+          "${aws_s3_bucket.mypotal_static.arn}/*",
+          "${aws_s3_bucket.mypotal_static.arn}" // Bucket itself also should be added for actions like ListBucket
         ]
       }
     ]
