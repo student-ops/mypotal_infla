@@ -5,6 +5,7 @@ resource "aws_s3_bucket" "mypotal_static" {
     Name        = "my-potal-bucket"
     Environment = "static"
   }
+  force_destroy = true
 }
 resource "aws_s3_bucket_website_configuration" "my_potal_website" {
   bucket = aws_s3_bucket.mypotal_static.id
