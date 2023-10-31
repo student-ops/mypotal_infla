@@ -20,3 +20,7 @@ override.tf.json
 terraform.rc
 
 .env
+
+r53_record.json
+**/genarated/*
+r53_instance.tf
