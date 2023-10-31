@@ -1,32 +1,29 @@
 resource "aws_route53_zone" "mypotal" {
-  name = var.domain_name + "."
+  name = "${var.domain_name}."
 }
 
 resource "aws_route53_record" "mypotal_a" {
   zone_id = aws_route53_zone.mypotal.zone_id
-  name    = var.domain_name + "."
+  name    = "${var.domain_name}."
   type    = "A"
-  #   ttl     = 300
-  #   records = ["8.8.8.8"]
   alias {
-    name                   = aws_cloudfront_distribution.moon_home_distribution.domain_name
-    zone_id                = aws_cloudfront_distribution.moon_home_distribution.hosted_zone_id
+    name                   = aws_cloudfront_distribution.mypotal_home_distribution.domain_name
+    zone_id                = aws_cloudfront_distribution.mypotal_home_distribution.hosted_zone_id
     evaluate_target_health = false
   }
 }
 
 resource "aws_route53_record" "www_mypotal_a" {
   zone_id = aws_route53_zone.mypotal.zone_id
-  name    = "www" + var.domain_name + "."
+  name    = "www.${var.domain_name}."
   type    = "A"
 
   alias {
-    name                   = var.domain_name + "."
+    name                   = "${var.domain_name}."
     zone_id                = aws_route53_zone.mypotal.zone_id
     evaluate_target_health = false
   }
 }
-
 resource "aws_route53_record" "cert_validation" {
   for_each = {
     for dvo in aws_acm_certificate.cert.domain_validation_options : dvo.domain_name => {
@@ -43,6 +40,7 @@ resource "aws_route53_record" "cert_validation" {
   ttl     = 300
 }
 
+# ## it's use for valtate new cert and bond with cname
 # resource "aws_acm_certificate_validation" "cert_validation" {
 #   certificate_arn         = aws_acm_certificate.cert.arn
 #   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
