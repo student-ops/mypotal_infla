@@ -8,7 +8,6 @@ terraform {
 }
 
 provider "aws" {
-  # profile = "moon_admin"
   region = local.region
 }
 
