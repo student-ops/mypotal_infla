@@ -51,3 +51,54 @@ resource "aws_cloudfront_distribution" "mypotal_home_distribution" {
   }
   aliases = ["cloud-crab.com", "www.cloud-crab.com"]
 }
+
+resource "aws_cloudfront_distribution" "mypotal_app_distribution" {
+  enabled         = true
+  is_ipv6_enabled = true
+  comment         = "mooon CloudFront Distribution"
+
+  origin {
+    domain_name = aws_instance.myinfla_ecs_instance.public_dns
+    origin_id   = aws_instance.myinfla_ecs_instance.public_dns
+
+    custom_origin_config {
+      http_port              = 80
+      https_port             = 443
+      origin_protocol_policy = "http-only"
+      origin_ssl_protocols   = ["TLSv1.2"]
+    }
+  }
+
+  default_cache_behavior {
+    allowed_methods  = ["HEAD", "DELETE", "POST", "GET", "OPTIONS", "PUT", "PATCH"]
+    cached_methods   = ["HEAD", "GET"]
+    target_origin_id = aws_instance.myinfla_ecs_instance.public_dns
+
+    forwarded_values {
+      query_string = true  # クエリ文字列を転送
+      headers      = ["*"] # すべてのヘッダーを転送
+
+      cookies {
+        forward = "all" # すべてのクッキーを転送
+      }
+    }
+
+    viewer_protocol_policy = "redirect-to-https" # HTTPからHTTPSへリダイレクト
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+  }
+
+  viewer_certificate {
+    acm_certificate_arn = aws_acm_certificate.cert.arn
+    ssl_support_method  = "sni-only"
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  aliases = ["app.cloud-crab.com"]
+}

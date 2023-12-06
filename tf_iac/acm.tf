@@ -5,6 +5,7 @@ resource "aws_acm_certificate" "cert" {
 
   subject_alternative_names = [
     "www.${var.domain_name}",
+    "app.${var.domain_name}"
   ]
 
   lifecycle {
